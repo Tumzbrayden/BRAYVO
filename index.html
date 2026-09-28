@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <title>BRAYVO | Financial Intelligence</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #07000d;
+        --panel: #0d0716;
+        --panel2: #12091d;
+        --cyan: #00ffff;
+        --magenta: #ff00ff;
+        --green: #00ff88;
+        --text: #f5f5f5;
+        --muted: #8c8495;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at 50% -20%, rgba(0,255,255,.10), transparent 35%),
+          radial-gradient(circle at 100% 50%, rgba(255,0,255,.06), transparent 30%),
+          var(--bg);
+        color: var(--text);
+        font-family: Inter, sans-serif;
+        overflow-x: hidden;
+      }
+
+      .font-orbitron {
+        font-family: Orbitron, sans-serif;
+      }
+
+      .font-exo {
+        font-family: "Exo 2", sans-serif;
+      }
+
+      .ticker-wrap {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 32px;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        white-space: nowrap;
+        background: rgba(0,0,0,.88);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0,255,255,.35);
+      }
+
+      .ticker {
+        display: inline-block;
+        padding-left: 100%;
+        animation: ticker 35s linear infinite;
+        color: var(--cyan);
+        font-family: monospace;
+        font-size: 11px;
+      }
+
+      @keyframes ticker {
+        from { transform: translateX(0); }
+        to { transform: translateX(-100%); }
+      }
+
+      .grid-bg {
+        position: fixed;
+        inset: 0;
+        z-index: -5;
+        background-image:
+          linear-gradient(rgba(0,255,255,.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,255,255,.025) 1px, transparent 1px);
+        background-size: 45px 45px;
+        mask-image: linear-gradient(to bottom, black, transparent 85%);
+      }
+
+      .infinity {
+        position: absolute;
+        width: min(850px, 120vw);
+        opacity: .12;
+        pointer-events: none;
+        filter: blur(1px);
+      }
+
+      nav {
+        position: fixed;
+        top: 32px;
+        left: 0;
+        width: 100%;
+        z-index: 900;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 5%;
+        background: rgba(7,0,13,.65);
+        backdrop-filter: blur(15px);
+        border-bottom: 1px solid rgba(255,255,255,.05);
+      }
+
+      .logo {
+        font-family: Orbitron, sans-serif;
+        font-weight: 900;
+        letter-spacing: -2px;
+        color: white;
+        text-shadow: 2px 2px var(--magenta), -2px -2px var(--cyan);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 25px;
+      }
+
+      .nav-links a {
+        color: #aaa;
+        text-decoration: none;
+        font-family: "Exo 2", sans-serif;
+        font-size: 13px;
+        transition: .2s;
+      }
+
+      .nav-links a:hover {
+        color: var(--cyan);
+      }
+
+      @media(max-width:700px) {
+        .nav-links { display: none; }
+      }
+
+      .hero {
+        min-height: 100vh;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 130px 20px 80px;
+        text-align: center;
+      }
+
+      .hero-logo {
+        font-family: Orbitron, sans-serif;
+        font-size: clamp(4rem, 15vw, 10rem);
+        font-weight: 900;
+        letter-spacing: -8px;
+        text-shadow: 4px 4px var(--magenta), -4px -4px var(--cyan);
+        animation: logoPulse 3s ease-in-out infinite;
+      }
+
+      @keyframes logoPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: .82; }
+      }
+
+      .tagline {
+        margin-top: -5px;
+        color: var(--cyan);
+        font-family: "Exo 2", sans-serif;
+        font-size: clamp(1.1rem, 3vw, 1.6rem);
+        letter-spacing: 4px;
+      }
+
+      .hero-description {
+        max-width: 620px;
+        margin: 25px auto 40px;
+        color: #999;
+        line-height: 1.7;
+      }
+
+      .btn {
+        border: 1px solid var(--cyan);
+        background: rgba(0,255,255,.04);
+        color: var(--cyan);
+        padding: 15px 28px;
+        border-radius: 999px;
+        font-family: Orbitron, sans-serif;
+        font-size: 11px;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: .25s;
+      }
+
+      .btn:hover {
+        background: var(--cyan);
+        color: #000;
+        box-shadow: 0 0 15px var(--cyan), 0 0 40px rgba(0,255,255,.25);
+        transform: translateY(-2px);
+      }
+
+      .btn.magenta {
+        border-color: var(--magenta);
+        color: var(--magenta);
+      }
+
+      .btn.magenta:hover {
+        background: var(--magenta);
+        color: #000;
+        box-shadow: 0 0 30px rgba(255,0,255,.5);
+      }
+
+      .section {
+        padding: 90px 6%;
+      }
+
+      .section-header {
+        margin-bottom: 35px;
+      }
+
+      .section-kicker {
+        color: var(--cyan);
+        font-family: monospace;
+        font-size: 11px;
+        letter-spacing: 3px;
+      }
+
+      .section-title {
+        margin-top: 8px;
+        font-family: Orbitron, sans-serif;
+        font-size: clamp(1.7rem, 5vw, 3rem);
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+
+      .card {
+        position: relative;
+        padding: 28px;
+        background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.01));
+        border: 1px solid rgba(255,255,255,.09);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: .25s;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, transparent, rgba(0,255,255,.08), transparent);
+        transform: translateX(-100%);
+        transition: .5s;
+      }
+
+      .card:hover::before {
+        transform: translateX(100%);
+      }
+
+      .card:hover {
+        border-color: rgba(0,255,255,.5);
+        transform: translateY(-5px);
+      }
+
+      .card h3 {
+        font-family: Orbitron, sans-serif;
+        color: var(--cyan);
+        font-size: 14px;
+        letter-spacing: 1px;
+      }
+
+      .card p {
+        color: #999;
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .stat {
+        margin-top: 20px;
+        font-family: Orbitron, sans-serif;
+        font-size: 25px;
+      }
+
+      .explorer {
+        background: rgba(0,0,0,.3);
+      }
+
+      .search-box {
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 25px;
+        padding: 15px 18px;
+        border: 1px solid rgba(0,255,255,.3);
+        border-radius: 10px;
+        background: rgba(0,255,255,.03);
+        color: white;
+        outline: none;
+      }
+
+      .search-box:focus {
+        border-color: var(--cyan);
+        box-shadow: 0 0 15px rgba(0,255,255,.15);
+      }
+
+      .country-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .country-card {
+        padding: 18px;
+        background: #0b0612;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 12px;
+        transition: .2s;
+      }
+
+      .country-card:hover {
+        border-color: var(--cyan);
+      }
+
+      .country-name {
+        font-family: Orbitron, sans-serif;
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+
+      .country-data {
+        color: #999;
+        font-size: 11px;
+        line-height: 1.8;
+      }
+
+      .country-data strong {
+        color: white;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 5000;
+        background: rgba(0,0,0,.8);
+        backdrop-filter: blur(12px);
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-box {
+        width: 100%;
+        max-width: 480px;
+        padding: 35px;
+        background: #0b0612;
+        border: 1px solid var(--cyan);
+        border-radius: 20px;
+        box-shadow: 0 0 30px rgba(0,255,255,.15);
+        animation: modalIn .25s ease;
+      }
+
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .form-input {
+        width: 100%;
+        margin-bottom: 12px;
+        padding: 14px;
+        background: #08040d;
+        border: 1px solid #28202f;
+        border-radius: 8px;
+        color: white;
+        outline: none;
+      }
+
+      .form-input:focus {
+        border-color: var(--cyan);
+      }
+
+      #terminal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #000;
+        color: #00ff41;
+        font-family: "Courier New", monospace;
+        padding: 25px;
+        overflow-y: auto;
+      }
+
+      #terminal.active {
+        display: block;
+      }
+
+      .term-input {
+        width: 100%;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #00ff41;
+        font-family: inherit;
+        font-size: 16px;
+      }
+
+      .term-card {
+        border: 1px solid #064d1c;
+        background: rgba(0,40,10,.3);
+        padding: 15px;
+        border-radius: 5px;
+      }
+
+      .close-terminal {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        border: 1px solid #00ff41;
+        background: #001000;
+        color: #00ff41;
+        padding: 8px 15px;
+        cursor: pointer;
+      }
+
+      footer {
+        padding: 50px 6%;
+        border-top: 1px solid rgba(255,255,255,.06);
+        color: #666;
+        font-size: 11px;
+        text-align: center;
+      }
+
+      @media(max-width:900px) {
+        .cards { grid-template-columns: 1fr; }
+        .country-grid { grid-template-columns: 1fr 1fr; }
+      }
+
+      @media(max-width:550px) {
+        .country-grid { grid-template-columns: 1fr; }
+        .hero-logo { letter-spacing: -4px; }
+        .section { padding: 65px 20px; }
+        .modal-box { padding: 25px; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="grid-bg"></div>
+
+    <div class="ticker-wrap">
+      <div class="ticker">
+        BRAYVO MARKET NETWORK
+        &nbsp;&nbsp; ◆ &nbsp;&nbsp;
+        BTC $87,402
+        &nbsp;&nbsp; ◆ &nbsp;&nbsp;
+        ETH $2,927
+        &nbsp;&nbsp; ◆ &nbsp;&nbsp;
+        GOLD $2,654
+        &nbsp;&nbsp; ◆ &nbsp;&nbsp;
+        S&P 500 5,982
+        &nbsp;&nbsp; ◆ &nbsp;&nbsp;
+        USD/EUR 0.94
+        &nbsp;&nbsp; ◆ &nbsp;&nbsp;
+        DEMO MARKET FEED — NOT LIVE FINANCIAL DATA
+      </div>
+    </div>
+
+    <nav>
+      <div class="logo">BRAYVO</div>
+
+      <div class="nav-links">
+        <a href="#home">HOME</a>
+        <a href="#systems">SYSTEMS</a>
+        <a href="#world">WORLD</a>
+        <a href="#about">ABOUT</a>
+      </div>
+
+      <button class="btn" onclick="openAccount()">OPEN ACCOUNT</button>
+    </nav>
+
+    <section class="hero" id="home">
+      <svg class="infinity" viewBox="0 0 600 300">
+        <path
+          d="M150,150 C150,50 250,50 300,150 C350,250 450,250 450,150 C450,50 350,50 300,150 C250,250 150,250 150,150 Z"
+          fill="none"
+          stroke="cyan"
+          stroke-width="2"
+          stroke-dasharray="1000"
+          stroke-dashoffset="1000"
+        >
+          <animate attributeName="stroke-dashoffset" from="1000" to="0" dur="8s" repeatCount="indefinite" />
+        </path>
+      </svg>
+
+      <div class="hero-logo">BRAYVO</div>
+      <div class="tagline">BANK BRAVELY. LIVE BOLDLY.</div>
+
+      <p class="hero-description">
+        A next-generation financial platform concept built around intelligent money management,
+        global financial intelligence, digital assets and long-term wealth systems.
+      </p>
+
+      <button class="btn" onclick="openAccount()">OPEN ACCOUNT IN 60s</button>
+    </section>
+
+    <section class="section" id="systems">
+      <div class="section-header">
+        <div class="section-kicker">BRAYVO // CORE SYSTEMS</div>
+        <div class="section-title">YOUR MONEY. ONE SYSTEM.</div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <h3>AI COACH</h3>
+          <p>
+            A future financial intelligence layer designed to analyse spending, saving and investment behaviour.
+          </p>
+          <div class="stat">AI<span style="color:var(--cyan)">+</span></div>
+        </div>
+
+        <div class="card">
+          <h3 style="color:var(--magenta)">DIGITAL ASSET HUB</h3>
+          <p>
+            A unified interface concept for monitoring digital assets and other market instruments.
+          </p>
+          <div class="stat">CRYPTO<span style="color:var(--magenta)">_</span></div>
+        </div>
+
+        <div class="card">
+          <h3>WEALTH VAULT</h3>
+          <p>
+            Visualise savings, long-term growth and compounding through a single financial dashboard.
+          </p>
+          <div class="stat">∞<span style="color:var(--cyan)">%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section explorer" id="world">
+      <div class="section-header">
+        <div class="section-kicker">BRAYVO // GLOBAL INTELLIGENCE</div>
+        <div class="section-title">WORLD ECONOMY</div>
+        <p style="color:#777; margin-top:10px;">
+          Prototype economic database. Figures shown here are demonstration values and are not a live financial feed.
+        </p>
+      </div>
+
+      <input
+        id="countrySearch"
+        class="search-box"
+        type="text"
+        placeholder="SEARCH COUNTRIES..."
+        autocomplete="off"
+      />
+
+      <div id="countryCount" style="font-family:monospace; color:var(--cyan); font-size:11px; margin-bottom:15px;"></div>
+      <div id="countryGrid" class="country-grid"></div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="card" style="max-width:850px; margin:auto; text-align:center;">
+        <div class="section-kicker">BRAYVO // PROTOTYPE</div>
+        <h2 class="section-title">BUILDING THE FINANCIAL OS</h2>
+
+        <p>
+          BRAYVO is currently a concept interface. Banking, investment, cryptocurrency and AI functionality shown here would require regulated financial infrastructure, secure backend systems, licensed providers and appropriate compliance before becoming a real financial service.
+        </p>
+
+        <button class="btn magenta" onclick="openTerminal()">ACCESS INTEL TERMINAL</button>
+      </div>
+    </section>
+
+    <footer>
+      BRAYVO © 2026
+      <br /><br />
+      FINANCIAL INTELLIGENCE // PROTOTYPE
+    </footer>
+
+    <div id="accountModal" class="modal" onclick="closeModalOutside(event)">
+      <div class="modal-box">
+        <h2 class="font-orbitron text-xl mb-2">CREATE BRAYVO ID</h2>
+        <p class="text-gray-500 text-sm mb-6">Prototype account creation.</p>
+
+        <input class="form-input" id="nameInput" type="text" placeholder="FULL NAME" />
+        <input class="form-input" id="emailInput" type="email" placeholder="EMAIL" />
+        <input class="form-input" id="phoneInput" type="tel" placeholder="PHONE" />
+
+        <button class="btn w-full" onclick="createAccount()">CREATE BRAYVO ID</button>
+        <button class="w-full mt-3 text-gray-500 text-sm" onclick="closeAccount()">CANCEL</button>
+      </div>
+    </div>
+
+    <div id="terminal">
+      <button class="close-terminal" onclick="closeTerminal()">ESC / CLOSE</button>
+
+      <p>> INITIALISING BRAYVO GLOBAL INTELLIGENCE TERMINAL...</p>
+      <p style="color:#ff4444;">> WARNING: ENCRYPTED LAYER DETECTED.</p>
+      <p>> ENTER ACCESS CODE.</p>
+
+      <br />
+
+      <div style="display:flex;">
+        <span>root@brayvo:~$&nbsp;</span>
+        <input id="passInput" class="term-input" type="password" autocomplete="off" />
+      </div>
+
+      <div id="terminalContent" style="display:none; margin-top:35px;">
+        <h2 style="font-size:25px;">[ BRAYVO GLOBAL LEDGER ]</h2>
+        <p style="color:#777;">Demonstration intelligence database.</p>
+
+        <input
+          id="terminalSearch"
+          class="term-input"
+          style="border:1px solid #064d1c; padding:12px; margin:20px 0;"
+          placeholder="FILTER COUNTRIES..."
+        />
+
+        <div id="terminalGrid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:10px;"></div>
+      </div>
+    </div>
+
+    <script>
+      const countries = [
+        ["Afghanistan", "South Asia", "$17B", "Kabul"],
+        ["Albania", "Europe", "$25B", "Tirana"],
+        ["Algeria", "Africa", "$266B", "Algiers"],
+        ["Andorra", "Europe", "$4B", "Andorra la Vella"],
+        ["Angola", "Africa", "$115B", "Luanda"],
+        ["Antigua and Barbuda", "Caribbean", "$2B", "St. John's"],
+        ["Argentina", "South America", "$640B", "Buenos Aires"],
+        ["Armenia", "Asia", "$25B", "Yerevan"],
+        ["Australia", "Oceania", "$1.8T", "Sydney"],
+        ["Austria", "Europe", "$521B", "Vienna"],
+        ["Azerbaijan", "Asia", "$74B", "Baku"],
+        ["Bahamas", "Caribbean", "$16B", "Nassau"],
+        ["Bahrain", "Middle East", "$47B", "Manama"],
+        ["Bangladesh", "Asia", "$450B", "Dhaka"],
+        ["Barbados", "Caribbean", "$7B", "Bridgetown"],
+        ["Belarus", "Europe", "$75B", "Minsk"],
+        ["Belgium", "Europe", "$655B", "Brussels"],
+        ["Belize", "Central America", "$3B", "Belmopan"],
+        ["Benin", "Africa", "$19B", "Porto-Novo"],
+        ["Bhutan", "Asia", "$3B", "Thimphu"],
+        ["Bolivia", "South America", "$46B", "Sucre"],
+        ["Bosnia and Herzegovina", "Europe", "$28B", "Sarajevo"],
+        ["Botswana", "Africa", "$20B", "Gaborone"],
+        ["Brazil", "South America", "$2.3T", "Brasília"],
+        ["Brunei", "Asia", "$15B", "Bandar Seri Begawan"],
+        ["Bulgaria", "Europe", "$107B", "Sofia"],
+        ["Burkina Faso", "Africa", "$21B", "Ouagadougou"],
+        ["Burundi", "Africa", "$4B", "Gitega"],
+        ["Cabo Verde", "Africa", "$3B", "Praia"],
+        ["Cambodia", "Asia", "$31B", "Phnom Penh"],
+        ["Cameroon", "Africa", "$53B", "Yaoundé"],
+        ["Canada", "North America", "$2.2T", "Toronto"],
+        ["Central African Republic", "Africa", "$3B", "Bangui"],
+        ["Chad", "Africa", "$19B", "N'Djamena"],
+        ["Chile", "South America", "$335B", "Santiago"],
+        ["China", "Asia", "$19.4T", "Shanghai"],
+        ["Colombia", "South America", "$400B", "Bogotá"],
+        ["Comoros", "Africa", "$1B", "Moroni"],
+        ["Congo", "Africa", "$15B", "Brazzaville"],
+        ["Costa Rica", "Central America", "$95B", "San José"],
+        ["Croatia", "Europe", "$90B", "Zagreb"],
+        ["Cuba", "Caribbean", "$N/A", "Havana"],
+        ["Cyprus", "Europe", "$36B", "Nicosia"],
+        ["Czech Republic", "Europe", "$347B", "Prague"],
+        ["Denmark", "Europe", "$430B", "Copenhagen"],
+        ["Djibouti", "Africa", "$4B", "Djibouti"],
+        ["Dominica", "Caribbean", "$0.7B", "Roseau"],
+        ["Dominican Republic", "Caribbean", "$125B", "Santo Domingo"],
+        ["Ecuador", "South America", "$125B", "Quito"],
+        ["Egypt", "Africa", "$395B", "Cairo"],
+        ["El Salvador", "Central America", "$36B", "San Salvador"],
+        ["Equatorial Guinea", "Africa", "$12B", "Malabo"],
+        ["Eritrea", "Africa", "N/A", "Asmara"],
+        ["Estonia", "Europe", "$43B", "Tallinn"],
+        ["Eswatini", "Africa", "$5B", "Mbabane"],
+        ["Ethiopia", "Africa", "$205B", "Addis Ababa"],
+        ["Fiji", "Oceania", "$6B", "Suva"],
+        ["Finland", "Europe", "$300B", "Helsinki"],
+        ["France", "Europe", "$3.2T", "Paris"],
+        ["Gabon", "Africa", "$21B", "Libreville"],
+        ["Gambia", "Africa", "$2B", "Banjul"],
+        ["Georgia", "Asia", "$33B", "Tbilisi"],
+        ["Germany", "Europe", "$4.7T", "Frankfurt"],
+        ["Ghana", "Africa", "$80B", "Accra"],
+        ["Greece", "Europe", "$256B", "Athens"],
+        ["Grenada", "Caribbean", "$1B", "St. George's"],
+        ["Guatemala", "Central America", "$105B", "Guatemala City"],
+        ["Guinea", "Africa", "$28B", "Conakry"],
+        ["Guinea-Bissau", "Africa", "$2B", "Bissau"],
+        ["Guyana", "South America", "$20B", "Georgetown"],
+        ["Haiti", "Caribbean", "$20B", "Port-au-Prince"],
+        ["Honduras", "Central America", "$34B", "Tegucigalpa"],
+        ["Hungary", "Europe", "$212B", "Budapest"],
+        ["Iceland", "Europe", "$33B", "Reykjavik"],
+        ["India", "Asia", "$4.1T", "Mumbai"],
+        ["Indonesia", "Asia", "$1.5T", "Jakarta"],
+        ["Iran", "Middle East", "$400B", "Tehran"],
+        ["Iraq", "Middle East", "$250B", "Baghdad"],
+        ["Ireland", "Europe", "$650B", "Dublin"],
+        ["Israel", "Middle East", "$540B", "Tel Aviv"],
+        ["Italy", "Europe", "$2.4T", "Rome"],
+        ["Ivory Coast", "Africa", "$95B", "Abidjan"],
+        ["Jamaica", "Caribbean", "$20B", "Kingston"],
+        ["Japan", "Asia", "$4.2T", "Tokyo"],
+        ["Jordan", "Middle East", "$53B", "Amman"],
+        ["Kazakhstan", "Asia", "$300B", "Astana"],
+        ["Kenya", "Africa", "$120B", "Nairobi"],
+        ["Kiribati", "Oceania", "$0.3B", "South Tarawa"],
+        ["Kuwait", "Middle East", "$160B", "Kuwait City"],
+        ["Kyrgyzstan", "Asia", "$14B", "Bishkek"],
+        ["Laos", "Asia", "$15B", "Vientiane"],
+        ["Latvia", "Europe", "$44B", "Riga"],
+        ["Lebanon", "Middle East", "$20B", "Beirut"],
+        ["Lesotho", "Africa", "$2B", "Maseru"],
+        ["Liberia", "Africa", "$4B", "Monrovia"],
+        ["Libya", "Africa", "$50B", "Tripoli"],
+        ["Liechtenstein", "Europe", "$7B", "Vaduz"],
+        ["Lithuania", "Europe", "$85B", "Vilnius"],
+        ["Luxembourg", "Europe", "$100B", "Luxembourg City"],
+        ["Madagascar", "Africa", "$18B", "Antananarivo"],
+        ["Malawi", "Africa", "$14B", "Lilongwe"],
+        ["Malaysia", "Asia", "$430B", "Kuala Lumpur"],
+        ["Maldives", "Asia", "$7B", "Malé"],
+        ["Mali", "Africa", "$22B", "Bamako"],
+        ["Malta", "Europe", "$23B", "Valletta"],
+        ["Marshall Islands", "Oceania", "$0.3B", "Majuro"],
+        ["Mauritania", "Africa", "$12B", "Nouakchott"],
+        ["Mauritius", "Africa", "$16B", "Port Louis"],
+        ["Mexico", "North America", "$1.8T", "Mexico City"],
+        ["Micronesia", "Oceania", "$0.5B", "Palikir"],
+        ["Moldova", "Europe", "$17B", "Chișinău"],
+        ["Monaco", "Europe", "N/A", "Monaco"],
+        ["Mongolia", "Asia", "$23B", "Ulaanbaatar"],
+        ["Montenegro", "Europe", "$8B", "Podgorica"],
+        ["Morocco", "Africa", "$155B", "Rabat"],
+        ["Mozambique", "Africa", "$21B", "Maputo"],
+        ["Myanmar", "Asia", "$65B", "Naypyidaw"],
+        ["Namibia", "Africa", "$14B", "Windhoek"],
+        ["Nauru", "Oceania", "$0.15B", "Yaren"],
+        ["Nepal", "Asia", "$42B", "Kathmandu"],
+        ["Netherlands", "Europe", "$1.2T", "Amsterdam"],
+        ["New Zealand", "Oceania", "$260B", "Auckland"],
+        ["Nicaragua", "Central America", "$17B", "Managua"],
+        ["Niger", "Africa", "$18B", "Niamey"],
+        ["Nigeria", "Africa", "$190B", "Lagos"],
+        ["North Korea", "Asia", "N/A", "Pyongyang"],
+        ["North Macedonia", "Europe", "$16B", "Skopje"],
+        ["Norway", "Europe", "$500B", "Oslo"],
+        ["Oman", "Middle East", "$110B", "Muscat"],
+        ["Pakistan", "Asia", "$370B", "Karachi"],
+        ["Palau", "Oceania", "$0.3B", "Ngerulmud"],
+        ["Panama", "Central America", "$90B", "Panama City"],
+        ["Papua New Guinea", "Oceania", "$32B", "Port Moresby"],
+        ["Paraguay", "South America", "$45B", "Asunción"],
+        ["Peru", "South America", "$270B", "Lima"],
+        ["Philippines", "Asia", "$470B", "Manila"],
+        ["Poland", "Europe", "$850B", "Warsaw"],
+        ["Portugal", "Europe", "$310B", "Lisbon"],
+        ["Qatar", "Middle East", "$220B", "Doha"],
+        ["Romania", "Europe", "$390B", "Bucharest"],
+        ["Russia", "Europe/Asia", "$2.1T", "Moscow"],
+        ["Rwanda", "Africa", "$15B", "Kigali"],
+        ["Saint Kitts and Nevis", "Caribbean", "$1B", "Basseterre"],
+        ["Saint Lucia", "Caribbean", "$2B", "Castries"],
+        ["Saint Vincent and the Grenadines", "Caribbean", "$1B", "Kingstown"],
+        ["Samoa", "Oceania", "$1B", "Apia"],
+        ["San Marino", "Europe", "$2B", "San Marino"],
+        ["São Tomé and Príncipe", "Africa", "$0.7B", "São Tomé"],
+        ["Saudi Arabia", "Middle East", "$1.1T", "Riyadh"],
+        ["Senegal", "Africa", "$31B", "Dakar"],
+        ["Serbia", "Europe", "$90B", "Belgrade"],
+        ["Seychelles", "Africa", "$2B", "Victoria"],
+        ["Sierra Leone", "Africa", "$6B", "Freetown"],
+        ["Singapore", "Asia", "$574B", "Singapore"],
+        ["Slovakia", "Europe", "$140B", "Bratislava"],
+        ["Slovenia", "Europe", "$75B", "Ljubljana"],
+        ["Solomon Islands", "Oceania", "$1B", "Honiara"],
+        ["Somalia", "Africa", "$12B", "Mogadishu"],
+        ["South Africa", "Africa", "$400B", "Johannesburg"],
+        ["South Korea", "Asia", "$1.9T", "Seoul"],
+        ["South Sudan", "Africa", "$5B", "Juba"],
+        ["Spain", "Europe", "$1.7T", "Madrid"],
+        ["Sri Lanka", "Asia", "$85B", "Colombo"],
+        ["Sudan", "Africa", "$30B", "Khartoum"],
+        ["Suriname", "South America", "$4B", "Paramaribo"],
+        ["Sweden", "Europe", "$610B", "Stockholm"],
+        ["Switzerland", "Europe", "$1.0T", "Zurich"],
+        ["Syria", "Middle East", "N/A", "Damascus"],
+        ["Taiwan", "Asia", "$800B", "Taipei"],
+        ["Tajikistan", "Asia", "$13B", "Dushanbe"],
+        ["Tanzania", "Africa", "$80B", "Dodoma"],
+        ["Thailand", "Asia", "$550B", "Bangkok"],
+        ["Timor-Leste", "Asia", "$2B", "Dili"],
+        ["Togo", "Africa", "$9B", "Lomé"],
+        ["Tonga", "Oceania", "$0.5B", "Nuku'alofa"],
+        ["Trinidad and Tobago", "Caribbean", "$28B", "Port of Spain"],
+        ["Tunisia", "Africa", "$50B", "Tunis"],
+        ["Turkey", "Europe/Asia", "$1.3T", "Istanbul"],
+        ["Turkmenistan", "Asia", "$60B", "Ashgabat"],
+        ["Tuvalu", "Oceania", "$0.05B", "Funafuti"],
+        ["Uganda", "Africa", "$55B", "Kampala"],
+        ["Ukraine", "Europe", "$190B", "Kyiv"],
+        ["United Arab Emirates", "Middle East", "$550B", "Dubai"],
+        ["United Kingdom", "Europe", "$3.6T", "London"],
+        ["United States", "North America", "$30.6T", "New York"],
+        ["Uruguay", "South America", "$80B", "Montevideo"],
+        ["Uzbekistan", "Asia", "$100B", "Tashkent"],
+        ["Vanuatu", "Oceania", "$1B", "Port Vila"],
+        ["Vatican City", "Europe", "N/A", "Vatican City"],
+        ["Venezuela", "South America", "$100B", "Caracas"],
+        ["Vietnam", "Asia", "$470B", "Ho Chi Minh City"],
+        ["Yemen", "Middle East", "$20B", "Sana'a"],
+        ["Zambia", "Africa", "$30B", "Lusaka"],
+        ["Zimbabwe", "Africa", "$35B", "Harare"]
+      ];
+
+      function renderCountries(filter = '') {
+        const grid = document.getElementById('countryGrid');
+        const query = filter.trim().toLowerCase();
+
+        const filtered = countries.filter(([name, region]) => {
+          return name.toLowerCase().includes(query) || region.toLowerCase().includes(query);
+        });
+
+        grid.innerHTML = '';
+
+        filtered.forEach(([name, region, gdp, hub]) => {
+          const card = document.createElement('div');
+          card.className = 'country-card';
+          card.innerHTML = `
+            <div class="country-name">${name}</div>
+            <div class="country-data">
+              REGION: <strong>${region}</strong><br>
+              GDP: <strong>${gdp}</strong><br>
+              FINANCIAL HUB: <strong>${hub}</strong>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        document.getElementById('countryCount').textContent =
+          `${filtered.length} COUNTRIES MATCHED // ${countries.length} DATABASE ENTRIES`;
+      }
+
+      document.getElementById('countrySearch').addEventListener('input', (e) => {
+        renderCountries(e.target.value);
+      });
+
+      renderCountries();
+
+      function openAccount() {
+        document.getElementById('accountModal').classList.add('active');
+        document.getElementById('nameInput').focus();
+      }
+
+      function closeAccount() {
+        document.getElementById('accountModal').classList.remove('active');
+      }
+
+      function closeModalOutside(event) {
+        if (event.target.id === 'accountModal') {
+          closeAccount();
+        }
+      }
+
+      function createAccount() {
+        const name = document.getElementById('nameInput').value.trim();
+        const email = document.getElementById('emailInput').value.trim();
+
+        if (!name || !email) {
+          alert('Please enter your name and email.');
+          return;
+        }
+
+        alert(
+          `BRAYVO ID INITIALISED.\n\nWelcome, ${name}.\n\nThis is currently a prototype account flow.`
+        );
+
+        closeAccount();
+      }
+
+      let terminalBuffer = '';
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeTerminal();
+          closeAccount();
+          return;
+        }
+
+        const active = document.activeElement;
+        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
+          return;
+        }
+
+        terminalBuffer += event.key.toLowerCase();
+        if (terminalBuffer.length > 20) {
+          terminalBuffer = terminalBuffer.slice(-20);
+        }
+
+        if (terminalBuffer.includes('vault')) {
+          openTerminal();
+          terminalBuffer = '';
+        }
+      });
+
+      function openTerminal() {
+        const terminal = document.getElementById('terminal');
+        terminal.classList.add('active');
+        setTimeout(() => document.getElementById('passInput').focus(), 100);
+      }
+
+      function closeTerminal() {
+        document.getElementById('terminal').classList.remove('active');
+      }
+
+      document.getElementById('passInput').addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+
+        const password = event.target.value;
+
+        if (password === 'bravely') {
+          event.target.parentElement.style.display = 'none';
+          document.getElementById('terminalContent').style.display = 'block';
+          renderTerminalLedger();
+        } else {
+          event.target.value = '';
+          alert('ACCESS DENIED');
+        }
+      });
+
+      function renderTerminalLedger(filter = '') {
+        const grid = document.getElementById('terminalGrid');
+        const query = filter.toLowerCase();
+
+        const results = countries.filter(([name]) => name.toLowerCase().includes(query));
+        grid.innerHTML = '';
+
+        results.forEach(([name, region, gdp, hub]) => {
+          const card = document.createElement('div');
+          card.className = 'term-card';
+          card.innerHTML = `
+            <strong>[ ${name.toUpperCase()} ]</strong><br><br>
+            REGION: ${region}<br>
+            GDP: ${gdp}<br>
+            HUB: ${hub}
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      document.getElementById('terminalSearch').addEventListener('input', (e) => {
+        renderTerminalLedger(e.target.value);
+      });
+    </script>
+  </body>
+</html>
